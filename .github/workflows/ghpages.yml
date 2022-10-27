@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: ghpages
-      cancel-in-progress: false
+      cancel-in-progress: true
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
@@ -23,18 +23,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.php_version }}
-      - name: Configure Composer cache
-        uses: actions/cache@v2
-        with:
-          path: ~/vendor
-          key: ${{ runner.os }}-node-php_${{ env.php_version }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-php_${{ env.php_version }}-
-      - name: Composer install
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer global require abenevaut/laravel-one
       - name: Generate static pages
-        run: laravel-one generate https://www.antoine-sanchez.com
+        run: |
+          composer global require abenevaut/laravel-one
+          laravel-one generate https://www.antoine-sanchez.com
       - uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
