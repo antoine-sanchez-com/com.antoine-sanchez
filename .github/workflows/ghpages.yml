@@ -32,11 +32,9 @@ jobs:
             ${{ runner.os }}-node-php_${{ env.php_version }}-
       - name: Composer install
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install -o --no-interaction --prefer-dist
+        run: composer global require abenevaut/laravel-one
       - name: Generate static pages
-        run: |
-          composer global require abenevaut/laravel-one
-          laravel-one generate https://www.antoine-sanchez.com
+        run: laravel-one generate https://www.antoine-sanchez.com
       - uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
